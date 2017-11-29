@@ -1,75 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mercacortex.ad_entrega_t2.MainActivity">
+    tools:context="com.mercacortex.ad_entrega_t2.ui.main.MainActivity"
+    >
 
     <Button
-        android:id="@+id/btnCodificacion"
+        android:id="@+id/btnAgenda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:onClick="onClick"
-        android:text="Codificacion"
+        android:text="Agenda"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
     <Button
-        android:id="@+id/btnAdminFicheros"
+        android:id="@+id/btnAlarmas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCodificacion"
-        android:text="Administrador de ficheros"
+        app:layout_constraintTop_toBottomOf="@+id/btnAgenda"
+        android:text="Alarmas"
         android:onClick="onClick"
         />
     <Button
-        android:id="@+id/btnAahc"
+        android:id="@+id/btnCalendario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAdminFicheros"
-        android:text="Conexión AACH"
+        app:layout_constraintTop_toBottomOf="@+id/btnAlarmas"
+        android:text="Calendario"
         android:onClick="onClick"
         />
     <Button
-        android:id="@+id/btnAsincrona"
+        android:id="@+id/btnWeb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAahc"
-        android:text="Conexión Asíncrona"
+        app:layout_constraintTop_toBottomOf="@+id/btnCalendario"
+        android:text="Web"
         android:onClick="onClick"
         />
     <Button
-        android:id="@+id/btnVolley"
+        android:id="@+id/btnImagenes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAsincrona"
-        android:text="Conexión Volley"
+        app:layout_constraintTop_toBottomOf="@+id/btnWeb"
+        android:text="Imagenes"
         android:onClick="onClick"
         />
     <Button
-        android:id="@+id/btnDescarga"
+        android:id="@+id/btnCambio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnVolley"
-        android:text="Descarga de imágenes"
+        app:layout_constraintTop_toBottomOf="@+id/btnImagenes"
+        android:text="Cambio de moneda"
         android:onClick="onClick"
         />
     <Button
@@ -79,7 +81,7 @@
         android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnDescarga"
+        app:layout_constraintTop_toBottomOf="@+id/btnCambio"
         android:text="Subir archivos"
         android:onClick="onClick"
         />

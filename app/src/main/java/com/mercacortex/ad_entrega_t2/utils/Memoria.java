@@ -1,62 +1,71 @@
 package com.mercacortex.ad_entrega_t2.utils;
 
 import android.app.Activity;
-import android.content.res.AssetManager;
+import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
+import com.nbsp.materialfilepicker.MaterialFilePicker;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
- * Esta clase guarda el contexto para pasarlo al resto de actividades
  */
-
 public class Memoria {
     private static final int FILE_PICKER_REQUEST_CODE = 1;
+    public static final String UTF8 = "UTF-8";
+    private Context context;
 
-    private String ruta;
-    private Context contexto;
-
-    // Hemos cambiado la firma del constructor para no pasarle el contexto
-    public Memoria(String ruta) {
-        this.ruta = ruta;
+    public Memoria(Context context) {
+        this.context = context;
     }
 
-    public Memoria() {
-        this.ruta = "Ninguna";
-    }
-    // Copiado de los apuntes //
-
-
-    public Memoria(Context contexto) {
-        this.contexto = contexto;
-        this.ruta = contexto.getApplicationContext().getFilesDir().toString();
-    }
-
-    //
     public boolean escribirInterna(String fichero, String cadena, Boolean anadir, String codigo) {
-        File miFichero;
-        //miFichero = new File(contexto.getFilesDir(), fichero);
-        miFichero = new File(ruta, fichero);
-        return escribir(miFichero, cadena, anadir, codigo);
+        FileOutputStream stream = null;
+        boolean resultado = false;
+        try {
+            if(anadir)
+                stream = context.openFileOutput(fichero, Context.MODE_PRIVATE | Context.MODE_APPEND);
+            else
+                stream = context.openFileOutput(fichero, Context.MODE_PRIVATE);
+            return escribir(stream, cadena, codigo);
+        } catch (FileNotFoundException e) {
+            Log.e("Archivo inexistente: ", e.getMessage());
+        } finally {
+            if(stream != null)
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e("Error al cerrar", e.getMessage());
+                }
+        }
+        return resultado;
     }
 
-    private boolean escribir(File fichero, String cadena, Boolean anadir, String codigo) {
-        FileOutputStream fos = null;
-        OutputStreamWriter osw = null;
+    private boolean escribir(FileOutputStream stream, String cadena, String codigo) {
         BufferedWriter out = null;
         boolean correcto = false;
         try {
-            fos = new FileOutputStream(fichero, anadir);
-            osw = new OutputStreamWriter(fos, codigo);
-            out = new BufferedWriter(osw);
+            out = new BufferedWriter(new OutputStreamWriter(stream, codigo));
             out.write(cadena);
         } catch (IOException e) {
             Log.e("Error de E/S", e.getMessage());
         } finally {
             try {
                 if (out != null) {
+                    out.flush();
                     out.close();
                     correcto = true;
                 }
@@ -67,12 +76,10 @@ public class Memoria {
         return correcto;
     }
 
-    //
-
     public String mostrarPropiedadesInterna(String fichero) {
         File miFichero;
         //miFichero = new File(contexto.getFilesDir(), fichero);
-        miFichero = new File(ruta, fichero);
+        miFichero = new File(fichero);
         return mostrarPropiedades(miFichero);
     }
 
@@ -94,8 +101,6 @@ public class Memoria {
         }
         return txt.toString();
     }
-
-    //
 
     public boolean disponibleEscritura() {
 
@@ -123,12 +128,23 @@ public class Memoria {
         File miFichero, tarjeta;
         tarjeta = Environment.getExternalStorageDirectory();
         miFichero = new File(tarjeta.getAbsolutePath(), fichero);
-        return escribir(miFichero, cadena, anadir, codigo);
+        FileOutputStream stream = null;
+        boolean resultado = false;
+        try {
+            resultado = escribir(new FileOutputStream(miFichero, anadir), cadena, codigo);
+        } catch (FileNotFoundException e) {
+            Log.e("Archivo inexistente: ", e.getMessage());
+        } finally {
+            if(stream != null)
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e("Error al cerrar", e.getMessage());
+                }
+        }
+        return resultado;
     }
 
-    //
-
-    // Copiando el contenido de escribir externa
     public String mostrarPropiedadesExterna(String fichero) {
         File miFichero, tarjeta;
         tarjeta = Environment.getExternalStorageDirectory();
@@ -136,41 +152,44 @@ public class Memoria {
         return mostrarPropiedades(miFichero);
     }
 
-
-    // AÃ±adido despuÃ©s
-
     public Resultado leerInterna(String fichero, String codigo) {
-        File miFichero;
-        //mifichero = new File(getApplicationContext().getFilesDir(),nombreFichero);
-        miFichero = new File(contexto.getFilesDir(), fichero);
-        return leer(miFichero, codigo);
+        FileInputStream stream = null;
+        Resultado resultado = new Resultado();
+        resultado.setCodigo(false);
+        try {
+            stream = context.openFileInput(fichero);
+            resultado = leer(stream, codigo);
+        } catch (FileNotFoundException e) {
+            Log.e("Archivo inexistente: ", e.getMessage());
+        } finally {
+            if(stream != null)
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e("Error al cerrar", e.getMessage());
+                }
+        }
+        return resultado;
     }
 
-    private Resultado leer(File fichero, String codigo) {
-        FileInputStream fis = null;
-        InputStreamReader isw = null;
-        BufferedReader in = null;
-        //String linea;
+    private Resultado leer(FileInputStream stream, String codigo) {
+        BufferedReader reader = null;
         StringBuilder miCadena = new StringBuilder();
         Resultado resultado = new Resultado();
-        int n;
         resultado.setCodigo(true);
         try {
-            fis = new FileInputStream(fichero);
-            isw = new InputStreamReader(fis, codigo);
-            in = new BufferedReader(isw);
-            while ((n = in.read()) != -1)
+            reader = new BufferedReader(new InputStreamReader(stream, codigo));
+            int n;
+            while ((n = reader.read()) != -1)
                 miCadena.append((char) n);
-            //while ((linea = in.readLine()) != null)
-            //miCadena.append(linea).append('\n');
         } catch (IOException e) {
             Log.e("Error", e.getMessage());
             resultado.setCodigo(false);
             resultado.setMensaje(e.getMessage());
         } finally {
             try {
-                if (in != null) {
-                    in.close();
+                if (reader != null) {
+                    reader.close();
                     resultado.setContenido(miCadena.toString());
                 }
             } catch (IOException e) {
@@ -184,13 +203,26 @@ public class Memoria {
 
     public Resultado leerExterna(String fichero, String codigo) {
         File miFichero, tarjeta;
-        //tarjeta = Environment.getExternalStoragePublicDirectory("datos/programas/");
         tarjeta = Environment.getExternalStorageDirectory();
         miFichero = new File(tarjeta.getAbsolutePath(), fichero);
-        return leer(miFichero, codigo);
+        FileInputStream stream = null;
+        Resultado resultado = new Resultado();
+        resultado.setCodigo(false);
+        try {
+            resultado = leer(new FileInputStream(miFichero), codigo);
+        } catch (FileNotFoundException e) {
+            Log.e("Archivo inexistente: ", e.getMessage());
+        } finally {
+            if(stream != null)
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    Log.e("Error al cerrar", e.getMessage());
+                }
+        }
+        return resultado;
     }
-
-    // Acceso a un fichero de recursos
+/*
 
     public Resultado leerRaw(String fichero) {
         //fichero tendrÃ¡ el nombre del fichero raw sin la extensiÃ³n
@@ -200,7 +232,6 @@ public class Memoria {
         Resultado resultado = new Resultado();
         resultado.setCodigo(true);
         try {
-            //is = contexto.getResources().openRawResource(R.raw.numero);
             is = contexto.getResources().openRawResource(
                     contexto.getResources().getIdentifier(fichero, "raw", contexto.getPackageName()));
             while ((n = is.read()) != -1) {
@@ -224,8 +255,6 @@ public class Memoria {
         }
         return resultado;
     }
-
-    // Acceso a un fichero en /assets
 
     public Resultado leerAsset(String fichero) {
         AssetManager am = contexto.getAssets();
@@ -257,6 +286,7 @@ public class Memoria {
         }
         return resultado;
     }
+*/
 
     public void LeerRutaExternaFilePicher(Activity currentActivity){
         new MaterialFilePicker()
