@@ -12,4 +12,6 @@ public class CambioMonedaActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cambio_moneda);
     }
+
+
 }

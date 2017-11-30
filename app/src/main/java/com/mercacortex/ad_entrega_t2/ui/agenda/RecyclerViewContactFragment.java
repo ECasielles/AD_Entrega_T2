@@ -34,11 +34,11 @@ public class RecyclerViewContactFragment extends Fragment {
     }
 
     public static RecyclerViewContactFragment newInstance(Bundle arguments) {
-        RecyclerViewContactFragment listDependencyFragment = new RecyclerViewContactFragment();
+        RecyclerViewContactFragment recyclerViewContactFragment = new RecyclerViewContactFragment();
         if(arguments != null) {
-            listDependencyFragment.setArguments(arguments);
+            recyclerViewContactFragment.setArguments(arguments);
         }
-        return listDependencyFragment;
+        return recyclerViewContactFragment;
     }
 
     @Override

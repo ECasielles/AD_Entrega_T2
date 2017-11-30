@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mercacortex.ad_entrega_t2.ui.agenda.AgendaActivity"
-    android:id="@android:id/content"
+    android:id="@+id/activity_agenda"
     >
 
 </FrameLayout>

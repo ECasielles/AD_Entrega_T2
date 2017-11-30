@@ -28,13 +28,12 @@ RecyclerViewContactFragment.ListContactListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_agenda);
 
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         recyclerViewContactFragment = (RecyclerViewContactFragment) fragmentManager.findFragmentByTag(RecyclerViewContactFragment.TAG);
         if (recyclerViewContactFragment == null){
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             recyclerViewContactFragment = RecyclerViewContactFragment.newInstance(null);
-            fragmentTransaction.replace(android.R.id.content, recyclerViewContactFragment, RecyclerViewContactFragment.TAG).commit();
+            fragmentTransaction.replace(R.id.activity_agenda, recyclerViewContactFragment, RecyclerViewContactFragment.TAG).commit();
         }
 
     }
@@ -52,7 +51,7 @@ RecyclerViewContactFragment.ListContactListener {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             addContactFragment = AddContactFragment.newInstance(null);
             fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.replace(android.R.id.content, addContactFragment, AddContactFragment.TAG).commit();
+            fragmentTransaction.replace(R.id.activity_agenda, addContactFragment, AddContactFragment.TAG).commit();
         }
     }
 
