@@ -1,16 +1,49 @@
 package com.mercacortex.ad_entrega_t2.ui.cambio;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.mercacortex.ad_entrega_t2.R;
+import com.mercacortex.ad_entrega_t2.utils.Conexion;
 import com.mercacortex.ad_entrega_t2.utils.MySingleton;
+import com.mercacortex.ad_entrega_t2.utils.RestClient;
+import com.mercacortex.ad_entrega_t2.utils.Resultado;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
+import cz.msebera.android.httpclient.Header;
 
 public class CambioMonedaActivity extends AppCompatActivity {
 
@@ -36,7 +69,6 @@ public class CambioMonedaActivity extends AppCompatActivity {
         edt_savePage = (EditText)findViewById(R.id.edt_savePage);
         rg_connectionType = (RadioGroup)findViewById(R.id.rg_connectionType);
         wv_web = (WebView)findViewById(R.id.wv_web);
-
         btn_connect = (Button)findViewById(R.id.btn_connect);
         btn_connect.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,7 +76,6 @@ public class CambioMonedaActivity extends AppCompatActivity {
                 doConnection();
             }
         });
-
         btn_savePage = (Button)findViewById(R.id.btn_savePage);
         btn_savePage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,14 +88,10 @@ public class CambioMonedaActivity extends AppCompatActivity {
     }
 
     private void checkLastFilePreference(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Ejercicio4Activity.this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CambioMonedaActivity.this);
         String preferenceFile = preferences.getString("pageFile", "");
-
-        if(!preferenceFile.isEmpty()){
-            edt_savePage.setText(preferenceFile);
-        }
+        if(!preferenceFile.isEmpty()) edt_savePage.setText(preferenceFile);
     }
-
     private void doConnection(){
         if(isNetworkAvailable()){
             switch (rg_connectionType.getCheckedRadioButtonId()){
@@ -73,66 +100,48 @@ public class CambioMonedaActivity extends AppCompatActivity {
                         aahcRequest(edt_path.getText().toString());
                     break;
                 case R.id.rb_java:
-                    if (checkPath(edt_path.getText().toString())){
-                        new JavaConnection(Ejercicio4Activity.this).execute(getHttpStartingPath(edt_path.getText().toString()));
-                    }
+                    if (checkPath(edt_path.getText().toString()))
+                        new JavaConnection(CambioMonedaActivity.this).execute(getHttpStartingPath(edt_path.getText().toString()));
                     break;
                 case R.id.rb_volley:
-                    if (checkPath(edt_path.getText().toString())){
-                        makeRequest(getHttpStartingPath(edt_path.getText().toString()));
-                    }
+                    if (checkPath(edt_path.getText().toString())) makeRequest(getHttpStartingPath(edt_path.getText().toString()));
                     break;
             }
-        }else{
-            Toast.makeText(Ejercicio4Activity.this, "No hay conexión a internet disponible", Toast.LENGTH_SHORT).show();
-        }
-
+        } else
+            Toast.makeText(CambioMonedaActivity.this, "No hay conexión a internet disponible", Toast.LENGTH_SHORT).show();
     }
-
     private void savePage(){
         if(!edt_savePage.getText().toString().isEmpty()){
             fileName = edt_savePage.getText().toString();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(Ejercicio4Activity.this);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CambioMonedaActivity.this);
             preferences.edit().putString("pageFile", fileName).apply();
 
             if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
                 File file = new File(Environment.getExternalStorageDirectory(), fileName);
-
                 try {
                     if (!currentResponse.isEmpty()){
                         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
                         writer.write(currentResponse);
                         writer.close();
-                        Toast.makeText(Ejercicio4Activity.this, "Pagina guardada en "+ fileName, Toast.LENGTH_SHORT).show();
-                    }else{
-                        Toast.makeText(Ejercicio4Activity.this, "No hay pagina que guardar", Toast.LENGTH_SHORT).show();
-                    }
-
+                        Toast.makeText(CambioMonedaActivity.this, "Pagina guardada en "+ fileName, Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(CambioMonedaActivity.this, "No hay pagina que guardar", Toast.LENGTH_SHORT).show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-
     }
-
     private boolean checkPath(String path){
-        boolean ok = true;
-
         if(path.isEmpty()){
-            Toast.makeText(Ejercicio4Activity.this, "Dirección vacía", Toast.LENGTH_SHORT).show();
-            ok = false;
+            Toast.makeText(CambioMonedaActivity.this, "Dirección vacía", Toast.LENGTH_SHORT).show();
+            return false;
         }
-
-        return ok;
+        return true;
     }
-
     private void aahcRequest(String path){
-
-        final ProgressDialog progress = new ProgressDialog(Ejercicio4Activity.this);
-
+        final ProgressDialog progress = new ProgressDialog(CambioMonedaActivity.this);
         String reformattedPath = getHttpStartingPath(path);
-
         RestClient.get(reformattedPath, new TextHttpResponseHandler() {
             @Override
             public void onStart() {
@@ -145,13 +154,11 @@ public class CambioMonedaActivity extends AppCompatActivity {
                 });
                 progress.show();
             }
-
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 progress.dismiss();
-                Toast.makeText(Ejercicio4Activity.this, "Error en la conexión", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CambioMonedaActivity.this, "Error en la conexión", Toast.LENGTH_SHORT).show();
             }
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, String responseString) {
                 progress.dismiss();
@@ -160,82 +167,25 @@ public class CambioMonedaActivity extends AppCompatActivity {
             }
         });
     }
-
-    //To be made asynchronously
-    public  Result connectJava(String texto) {
-        URL url;
-        HttpURLConnection urlConnection = null;
-        int response;
-        Result result= new Result();
-        try {
-            url = new URL(texto);
-            urlConnection = (HttpURLConnection) url.openConnection();
-            response = urlConnection.getResponseCode();
-            if (response == HttpURLConnection.HTTP_OK) {
-                result.setCode(true);
-                result.setContent(read(urlConnection.getInputStream()));
-            } else {
-                result.setCode(false);
-                result.setMessage("Error en el acceso a la web: " + String.valueOf(response));
-            }
-        } catch (IOException e) {
-            result.setCode(false);
-            result.setMessage("Excepción: " + e.getMessage());
-        } finally {
-            try {
-                if (urlConnection != null)
-                    urlConnection.disconnect();
-            } catch (Exception e) {
-                result.setCode(false);
-                result.setMessage("Excepción: " + e.getMessage());
-            }
-            return result;
-        }
-    }
-
-    private String read(InputStream in) throws IOException{
-        StringBuffer result = new StringBuffer();
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        String line;
-
-        while((line = reader.readLine()) != null){
-            result.append(line);
-        }
-
-        reader.close();
-
-        return result.toString();
-    }
-
     private String getHttpStartingPath(String path){
         String result = path;
-
-        if(!result.startsWith("http://")){
-            result = "http://"+result;
-        }
-
+        if(!result.startsWith("http://")) result = "http://"+result;
         return result;
     }
-
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
-
         if (networkInfo != null && networkInfo.isConnected())
             return true;
         else
             return false;
     }
-
     public void makeRequest(String url) {
-
         final String path = url;
-        final ProgressDialog progress = new ProgressDialog(Ejercicio4Activity.this);
+        final ProgressDialog progress = new ProgressDialog(CambioMonedaActivity.this);
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setMessage("Conectando...");
         progress.show();
-
         StringRequest stringRequest = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -245,7 +195,6 @@ public class CambioMonedaActivity extends AppCompatActivity {
                         progress.dismiss();
                         wv_web.loadDataWithBaseURL(path, response, "text/html", "utf-8", null);
                         currentResponse = response;
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -268,11 +217,9 @@ public class CambioMonedaActivity extends AppCompatActivity {
                     }
                 });
         stringRequest.setTag(TAG);
-// Set retry policy
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(3000, 1, 1));
         requestQueue.add(stringRequest);
     }
-
     @Override
     protected void onStop() {
         super.onStop();
@@ -280,16 +227,13 @@ public class CambioMonedaActivity extends AppCompatActivity {
             requestQueue.cancelAll(TAG);
         }
     }
-
     /**
      * AsyncTask for JAVA.NET communication
      */
-    class JavaConnection extends AsyncTask<String, String, Result>{
-
+    class JavaConnection extends AsyncTask<String, String, Resultado> {
         ProgressDialog progress;
         Context context;
-
-        public JavaConnection(Context context){
+        JavaConnection(Context context){
             this.context = context;
         }
 
@@ -305,33 +249,24 @@ public class CambioMonedaActivity extends AppCompatActivity {
                 }
             });
             progress.show();
-
             super.onPreExecute();
         }
-
         @Override
-        protected Result doInBackground(String... params) {
-            Result result;
-
-            result = connectJava(params[0]);
-
-            return result;
+        protected Resultado doInBackground(String... params) {
+            return Conexion.conectarJava(params[0]);
         }
-
         @Override
-        protected void onPostExecute(Result result) {
+        protected void onPostExecute(Resultado resultado) {
             progress.dismiss();
-
-            if(result.isCode()){
-                wv_web.loadDataWithBaseURL(null, result.getContent(), "text/html", "UTF-8", null);
-                currentResponse = result.getContent();
+            if(resultado.getCodigo()){
+                wv_web.loadDataWithBaseURL(null, resultado.getContenido(), "text/html", "UTF-8", null);
+                currentResponse = resultado.getContenido();
             }else{
-                wv_web.loadDataWithBaseURL(null, result.getMessage(), "text/plain", "UTF-8", null);
+                wv_web.loadDataWithBaseURL(null, resultado.getMensaje(), "text/plain", "UTF-8", null);
             }
 
-            super.onPostExecute(result);
+            super.onPostExecute(resultado);
         }
-
         @Override
         protected void onCancelled() {
             progress.dismiss();
@@ -339,8 +274,5 @@ public class CambioMonedaActivity extends AppCompatActivity {
             super.onCancelled();
         }
     }
-
-
-
 
 }

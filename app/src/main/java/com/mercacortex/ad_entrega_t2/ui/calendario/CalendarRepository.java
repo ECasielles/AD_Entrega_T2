@@ -4,8 +4,6 @@ import android.content.Context;
 
 import com.mercacortex.ad_entrega_t2.utils.Memoria;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -66,8 +64,9 @@ public class CalendarRepository extends ArrayList<Date> {
             } else {
                 String[] lectura = content.split("\n");
                 for (int i = 0; i < lectura.length; i++) {
-                    String[] line = lectura[i].split(";");
-                    /*add(new Alarm(Integer.parseInt(line[0]), line[1], Long.parseLong(line[2])));*/
+                    String[] line = lectura[i].split("/");
+                    add(new Date(Integer.parseInt(line[0]) +  100, Integer.parseInt(line[1]) - 1,
+                            Integer.parseInt(line[2])));
                 }
             }
         }

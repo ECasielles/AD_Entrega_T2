@@ -34,7 +34,8 @@ public class AlarmaActivity extends AppCompatActivity{
     TextView txvAlarms, txvName, txvTime;
     AlarmRepository repository;
     AlarmCountDownManager manager;
-    int[] mediaArrayId = { R.raw.akbar, R.raw.golf, R.raw.ping, R.raw.slip };
+    int[] mediaArrayId = { //R.raw.akbar,
+            R.raw.golf, R.raw.ping, R.raw.slip };
     MediaPlayer player;
 
     @Override

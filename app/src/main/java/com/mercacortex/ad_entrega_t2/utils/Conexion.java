@@ -55,7 +55,6 @@ public class Conexion {
         int valor;
         Resultado resultado = new Resultado();
         try {
-//cliente = new DefaultHttpClient();
             cliente = HttpClientBuilder.create().build();
             peticion = new HttpPost(texto);
             respuesta = cliente.execute(peticion);
@@ -90,7 +89,6 @@ public class Conexion {
         in = new BufferedReader(new InputStreamReader(entrada), 32000);
         while ((linea = in.readLine()) != null)
             miCadena.append(linea);
-        //miCadena.append(linea).append('\n');
         in.close();
         return miCadena.toString();
     }
