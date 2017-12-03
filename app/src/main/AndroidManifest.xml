@@ -27,9 +27,9 @@
         <activity android:name=".ui.agenda.AgendaActivity" />
         <activity android:name=".ui.alarma.AlarmaActivity" />
         <activity android:name=".ui.calendario.CalendarioActivity" />
-        <activity android:name=".ui.web.WebActivity" />
+        <activity android:name=".ui.cambio.CambioActivity" />
         <activity android:name=".ui.imagenes.ImagenesActivity" />
-        <activity android:name=".ui.cambio.CambioMonedaActivity" />
+        <activity android:name=".ui.web.WebActivity" />
         <activity android:name=".ui.subida.SubidaActivity"></activity>
     </application>
 

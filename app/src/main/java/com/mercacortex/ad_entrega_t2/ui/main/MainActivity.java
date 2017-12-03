@@ -9,7 +9,7 @@ import com.mercacortex.ad_entrega_t2.R;
 import com.mercacortex.ad_entrega_t2.ui.agenda.AgendaActivity;
 import com.mercacortex.ad_entrega_t2.ui.alarma.AlarmaActivity;
 import com.mercacortex.ad_entrega_t2.ui.calendario.CalendarioActivity;
-import com.mercacortex.ad_entrega_t2.ui.cambio.CambioMonedaActivity;
+import com.mercacortex.ad_entrega_t2.ui.cambio.CambioActivity;
 import com.mercacortex.ad_entrega_t2.ui.imagenes.ImagenesActivity;
 import com.mercacortex.ad_entrega_t2.ui.subida.SubidaActivity;
 import com.mercacortex.ad_entrega_t2.ui.web.WebActivity;
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ImagenesActivity.class));
                 break;
             case R.id.btnCambio:
-                startActivity(new Intent(this, CambioMonedaActivity.class));
+                startActivity(new Intent(this, CambioActivity.class));
                 break;
             case R.id.btnSubir:
                 startActivity(new Intent(this, SubidaActivity.class));

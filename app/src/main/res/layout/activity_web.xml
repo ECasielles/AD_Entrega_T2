@@ -1,9 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mercacortex.ad_entrega_t2.ui.web.WebActivity">
+    tools:context="com.mercacortex.ad_entrega_t2.ui.web.WebActivity"
+    >
+
+    <TextView
+        android:id="@+id/txvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Introduzca una url:"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edtPath"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="40dp"
+        android:layout_marginTop="8dp"
+        android:ems="8"
+        android:hint="Url"
+        android:text="google.com"
+        app:layout_constraintEnd_toStartOf="@+id/edtSave"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txvTitle" />
+
+    <EditText
+        android:id="@+id/edtSave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ems="8"
+        android:hint="Nombre fichero"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/edtPath"
+        app:layout_constraintTop_toBottomOf="@+id/txvTitle" />
+
+    <RadioGroup
+        android:id="@+id/rgpConnection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="45dp"
+        android:clipChildren="false"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/edtPath">
+
+        <RadioButton
+            android:id="@+id/rbtJava"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="java.net"
+            app:layout_constraintBottom_toTopOf="@+id/wvwWeb"
+            app:layout_constraintEnd_toStartOf="@+id/rbtAahc"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edtPath" />
+
+        <RadioButton
+            android:id="@+id/rbtAahc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AAHC"
+            app:layout_constraintBaseline_toBaselineOf="@+id/rbtJava"
+            app:layout_constraintEnd_toStartOf="@+id/rbtVolley"
+            app:layout_constraintStart_toEndOf="@+id/rbtJava" />
+
+        <RadioButton
+            android:id="@+id/rbtVolley"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Volley"
+            app:layout_constraintEnd_toStartOf="@+id/btnConnect"
+            app:layout_constraintStart_toEndOf="@+id/rbtAahc"
+            app:layout_constraintTop_toTopOf="@+id/rbtAahc" />
+
+    </RadioGroup>
+
+    <WebView
+        android:id="@+id/wvwWeb"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnConnect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rgpConnection"
+        />
+
+    <Button
+        android:id="@+id/btnConnect"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Conectar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnSavepage"
+        />
+    <Button
+        android:id="@+id/btnSavepage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Guardar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnConnect"
+        />
+
 
 </android.support.constraint.ConstraintLayout>

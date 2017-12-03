@@ -4,6 +4,75 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.mercacortex.ad_entrega_t2.ui.imagenes.ImagenesActivity">
+    tools:context="com.mercacortex.ad_entrega_t2.ui.imagenes.ImagenesActivity"
+    tools:layout_editor_absoluteY="81dp">
+
+
+    <EditText
+        android:id="@+id/edtPath"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="http://alumno.mobi/~alumno/superior/casielles/enlaces.txt"
+        android:hint="Ruta"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imvImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnUp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edtPath" />
+
+    <TextView
+        android:id="@+id/txvPosition"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnUp"
+        app:layout_constraintEnd_toStartOf="@+id/btnDown"
+        app:layout_constraintStart_toEndOf="@+id/btnUp"
+        tools:text="1/10" />
+
+    <Button
+        android:id="@+id/btnDown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Abajo"
+        app:layout_constraintBottom_toTopOf="@+id/btnDownload"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txvPosition"
+        android:onClick="onClick"
+        />
+
+    <Button
+        android:id="@+id/btnUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Arriba"
+        app:layout_constraintBottom_toTopOf="@+id/btnDownload"
+        app:layout_constraintEnd_toStartOf="@+id/txvPosition"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="onClick"
+        />
+
+    <Button
+        android:id="@+id/btnDownload"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:text="Descargar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="onClick"
+        />
 
 </android.support.constraint.ConstraintLayout>
