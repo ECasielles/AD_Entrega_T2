@@ -35,7 +35,7 @@ import java.util.List;
 //Usando: https://github.com/square/android-times-square
 public class CalendarioActivity extends AppCompatActivity {
 
-    Button btnRestart;
+    Button btnRestart, btnSave;
     TextView txvInfo;
     Date maxDate = new Date(118,5,22);
     Date minDate = new Date(117,8,15);
@@ -91,7 +91,25 @@ public class CalendarioActivity extends AppCompatActivity {
     }
 
     public void onClick(View view) {
-        init();
+        switch (view.getId()) {
+            case R.id.btnSave:
+                List<Date> dates = calendarPickerView.getSelectedDates();
+                String linea = "";
+                if(dates.size() > 0) {
+                    int classDays = 0;
+                    for (Date tempDate : dates)
+                        if (!isHoliday(tempDate)) {
+                            classDays++;
+                            linea += tempDate.getYear() + "/" + tempDate.getMonth() + "/" + tempDate.getDate() + "\n";
+                        }
+                    CalendarRepository.saveDates(linea);
+                    txvInfo.setText("Guardados días " + classDays + " lectivos");
+                }
+                break;
+            case R.id.btnRestart:
+                init();
+                break;
+        }
     }
 
 

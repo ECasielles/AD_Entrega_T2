@@ -14,6 +14,8 @@ import java.util.Date;
 public class CalendarRepository extends ArrayList<Date> {
 
     private static final String CALENDARIO = "calendario.txt";
+    private static final String LECTIVOS = "lectivos.txt";
+
     private static CalendarRepository calendarRepository;
     private static Memoria memoria;
 
@@ -79,5 +81,10 @@ public class CalendarRepository extends ArrayList<Date> {
             add(new Date(Integer.parseInt(line[0]), Integer.parseInt(line[1]),
                     Integer.parseInt(line[2])));
         }
+    }
+
+    public static void saveDates(String dates) {
+        if (memoria.disponibleLectura())
+            memoria.escribirExterna(LECTIVOS, dates, false, Memoria.UTF8);
     }
 }
