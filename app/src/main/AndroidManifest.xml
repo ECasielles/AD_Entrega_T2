@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mercacortex.ad_entrega_t2">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -17,21 +18,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.main.MainActivity">
-        </activity>
-        <activity android:name=".ui.agenda.AgendaActivity" />
-        <activity android:name=".ui.alarma.AlarmaActivity" />
-        <activity android:name=".ui.calendario.CalendarioActivity" >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".ui.web.WebActivity" />
+        <activity android:name=".ui.agenda.AgendaActivity" />
+        <activity android:name=".ui.alarma.AlarmaActivity" />
+        <activity android:name=".ui.calendario.CalendarioActivity" />
+        <activity android:name=".ui.cambio.CambioActivity" />
         <activity android:name=".ui.imagenes.ImagenesActivity" />
-        <activity android:name=".ui.cambio.CambioMonedaActivity" />
+        <activity android:name=".ui.web.WebActivity" />
         <activity android:name=".ui.subida.SubidaActivity"></activity>
     </application>
 

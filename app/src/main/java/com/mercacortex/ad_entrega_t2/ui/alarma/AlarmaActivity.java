@@ -34,7 +34,8 @@ public class AlarmaActivity extends AppCompatActivity{
     TextView txvAlarms, txvName, txvTime;
     AlarmRepository repository;
     AlarmCountDownManager manager;
-    int[] mediaArrayId = { R.raw.akbar, R.raw.golf, R.raw.ping, R.raw.slip };
+    int[] mediaArrayId = { //R.raw.akbar,
+            R.raw.golf, R.raw.ping, R.raw.slip };
     MediaPlayer player;
 
     @Override
@@ -49,6 +50,12 @@ public class AlarmaActivity extends AppCompatActivity{
         manager.startNext();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        manager.cancelAll();
+    }
+
     public void launchNext() {
         player = MediaPlayer.create(this, mediaArrayId[(int)(Math.random() * mediaArrayId.length)]);
         player.start();
@@ -61,6 +68,7 @@ public class AlarmaActivity extends AppCompatActivity{
         int currentAlarmPosition;
         int MAX_ALARMS = 5;
         long interval = 400;
+        CountDownTimer timer;
 
         AlarmCountDownManager(List<Alarm> alarms) {
             this.alarms = alarms.subList(0, MAX_ALARMS);
@@ -73,7 +81,7 @@ public class AlarmaActivity extends AppCompatActivity{
                 txvAlarms.setText("Quedan " + (alarms.size() - alarms.indexOf(currentAlarm)) + " alarmas");
                 txvName.setText(currentAlarm.getText());
 
-                new CountDownTimer(currentAlarm.getTime(), interval) {
+                timer = new CountDownTimer(currentAlarm.getTime(), interval) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         int mins = (int) millisUntilFinished / 60000;
@@ -92,6 +100,9 @@ public class AlarmaActivity extends AppCompatActivity{
             }
         }
 
+        public void cancelAll() {
+            timer.cancel();
+        }
     }
 
 }

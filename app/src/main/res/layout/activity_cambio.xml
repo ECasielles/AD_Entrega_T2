@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mercacortex.ad_entrega_t2.ui.cambio.CambioActivity"
+    >
+
+    <EditText
+        android:id="@+id/edtPath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="alumno.mobi/~alumno/superior/casielles/cambio.txt"
+        android:hint="Ruta"
+        android:inputType="textWebEditText"
+        />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilEuros"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edtPath"
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edtEuros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Euros"
+            android:inputType="numberDecimal"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tilDolares"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilEuros"
+        >
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edtDolares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Dolares"
+            android:inputType="numberDecimal"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <RadioGroup
+        android:id="@+id/rgpMoneda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilDolares"
+        >
+
+        <RadioButton
+            android:id="@+id/rbtDolaresAEuros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Dolares a Euros"
+            />
+
+        <RadioButton
+            android:id="@+id/rbtEurosADolares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Euros a Dolares"
+            />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/btnCargar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Cargar cambio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rgpMoneda"
+        />
+
+
+</android.support.constraint.ConstraintLayout>

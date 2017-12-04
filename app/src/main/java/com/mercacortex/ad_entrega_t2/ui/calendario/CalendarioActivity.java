@@ -4,15 +4,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.mercacortex.ad_entrega_t2.R;
+import com.squareup.timessquare.CalendarPickerView;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 3. Crear una aplicación que calcule los días lectivos en el calendario escolar del curso actual.
@@ -31,93 +32,67 @@ import java.util.Date;
  * ThreeTenABP y Javadoc
  * Android Date/Time tool comparison
  */
+//Usando: https://github.com/square/android-times-square
 public class CalendarioActivity extends AppCompatActivity {
 
-    DatePicker datePicker;
-    Date startDate, endDate;
-    Button btnCalc, btnBack;
-    Date maxDate = new Date(18,6,21);
-    Date minDate = new Date(17,9,15);
+    Button btnRestart;
+    TextView txvInfo;
+    Date maxDate = new Date(118,5,22);
+    Date minDate = new Date(117,8,15);
     CalendarRepository repository;
+    CalendarPickerView calendarPickerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendario);
+
+        btnRestart = (Button) findViewById(R.id.btnRestart);
+        txvInfo = (TextView) findViewById(R.id.txvInfo);
         repository = CalendarRepository.getInstance(this);
-        btnCalc = (Button) findViewById(R.id.btnCalc);
-        btnBack = (Button) findViewById(R.id.btnBack);
-        datePicker = (DatePicker) findViewById(R.id.dpSchool);
 
-        DateTime today = DateTime.now();
-        Date date = new Date(today.getYear(), today.getMonthOfYear(), today.getDayOfMonth());
-        isHoliday(date);
+        calendarPickerView = (CalendarPickerView) findViewById(R.id.calendar_view);
+        calendarPickerView.init(minDate, maxDate).inMode(CalendarPickerView.SelectionMode.RANGE);
+        calendarPickerView.highlightDates(repository);
+        calendarPickerView.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
+            @Override
+            public void onDateSelected(Date date) {
+                List<Date> dates = calendarPickerView.getSelectedDates();
+                if(dates.size() > 0) {
+                    int classDays = 0;
+                    for (Date tempDate : dates)
+                        if (!isHoliday(tempDate))
+                            classDays++;
+                    txvInfo.setText("Días lectivos: " + classDays);
+                }
+            }
+            @Override
+            public void onDateUnselected(Date date) {
+            }
+        });
 
-        initialize();
+        init();
+    }
+
+    boolean isHoliday(Date date){
+        DateTime dateTime = new DateTime(date);
+        return dateTime.getDayOfWeek() == DateTimeConstants.SUNDAY ||
+                dateTime.getDayOfWeek() == DateTimeConstants.SATURDAY ||
+                repository.contains(date);
+    }
+
+    void init() {
+        Date today = new Date();
+        calendarPickerView.selectDate(today);
+        if(isHoliday(today))
+            txvInfo.setText("¡Hoy no es lectivo!");
+        else
+            txvInfo.setText("Hoy tienes clase...");
     }
 
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.btnBack:
-                initialize();
-                break;
-            case R.id.btnCalc:
-                if(startDate != null && endDate != null) {
-                    int minIndex = 0;
-                    int maxIndex = 0;
-                    while()
-                }
-
-                break;
-        }
+        init();
     }
 
-    void initialize(){
-        startDate = null;
-        endDate = null;
-        datePicker.setMinDate(minDate.getTime());
-        datePicker.setMaxDate(maxDate.getTime());
-        datePicker.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Date selectedDate = new Date(
-                        ((DatePicker) view).getYear(),
-                        ((DatePicker) view).getMonth(),
-                        ((DatePicker) view).getDayOfMonth());
-                isHoliday(selectedDate);
-            }
-        });
-        datePicker.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                if(startDate == null) {
-                    startDate = new Date(
-                            ((DatePicker) view).getYear(),
-                            ((DatePicker) view).getMonth(),
-                            ((DatePicker) view).getDayOfMonth()
-                    );
-                    ((DatePicker) view).setMinDate(startDate.getTime());
-                } else {
-                    endDate = new Date(
-                            ((DatePicker) view).getYear(),
-                            ((DatePicker) view).getMonth(),
-                            ((DatePicker) view).getDayOfMonth()
-                    );
-                    ((DatePicker) view).setMaxDate(endDate.getTime());
-                }
-                return true;
-            }
-        });
-    }
-
-    void isHoliday(Date date){
-        DateTime dateTime = new DateTime(date.getTime());
-        if(dateTime.getDayOfWeek() != DateTimeConstants.SATURDAY &&
-                dateTime.getDayOfWeek() != DateTimeConstants.SUNDAY &&
-                repository.contains(date))
-            Toast.makeText(this, "Hoy no es lectivo", Toast.LENGTH_SHORT).show();
-        else
-            Toast.makeText(this, "Hoy es lectivo", Toast.LENGTH_SHORT).show();
-    }
 
 }
